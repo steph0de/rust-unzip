@@ -1,22 +1,16 @@
 use std::io;
 use std::path::{Path, PathBuf};
-use transformation_pipeline::{TransformationStage, StageActions, StageResult};
 use transformation_metadata::ExtractionMetadata;
+use transformation_pipeline::{StageActions, StageResult, TransformationStage};
 
 pub struct StripComponents {
-
     num: u8,
-
 }
 
 impl StripComponents {
-
     pub fn new(num: u8) -> StripComponents {
-        StripComponents {
-            num: num,
-        }
+        StripComponents { num }
     }
-
 }
 
 impl TransformationStage<ExtractionMetadata> for StripComponents {
@@ -46,15 +40,17 @@ impl TransformationStage<ExtractionMetadata> for StripComponents {
         let start_str: String = "".to_owned();
         let start: &Path = Path::new(&start_str);
         let mut output: PathBuf = start.join(".");
-        path
-            .components()
+        path.components()
             .skip(self.num.into())
             .map(|comp| comp.as_os_str())
             .for_each(|comp| output = output.join(comp));
 
         let joined = output.as_os_str().to_str();
         if joined.is_none() {
-            return Err(io::Error::new(io::ErrorKind::Other, "Couldn't join stripped string."));
+            return Err(io::Error::new(
+                io::ErrorKind::Other,
+                "Couldn't join stripped string.",
+            ));
         }
 
         Ok(StageActions::Next(ExtractionMetadata {

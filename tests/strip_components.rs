@@ -1,14 +1,14 @@
-extern crate zip;
-extern crate unzip;
 extern crate temporary;
+extern crate unzip;
+extern crate zip;
 
-use std::fs::File;
 use self::temporary::Directory as TempDir;
+use std::fs::File;
 
 use unzip::Unzipper;
 
 mod assertions;
-use assertions::{non_empty_file, is_dir};
+use assertions::{is_dir, non_empty_file};
 
 mod utils;
 use utils::{create_archive, zip_single_file};

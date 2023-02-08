@@ -12,17 +12,17 @@
 
 [package]
 name = "unzip"
-version = "0.1.0"
-authors = ["Ryan Leonard (http://ryanleonard.us)"]
+version = "0.1.1"
+authors = ["Stephane Darrell EMILIEN", "Ryan Leonard (http://ryanleonard.us)"]
 description = "Library to decompress all (or some) files from a zipped archive."
 license = "MIT"
 [dependencies.time]
-version = "0.1.38"
+version = "0.3.17"
 
 [dependencies.transformation-pipeline]
 version = "0.1.0"
 
 [dependencies.zip]
-version = "0.2.6"
+version = "0.6.3"
 [dev-dependencies.temporary]
 version = "0.6.3"

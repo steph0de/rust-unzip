@@ -1,14 +1,14 @@
-extern crate zip;
-extern crate unzip;
 extern crate temporary;
+extern crate unzip;
+extern crate zip;
 
-use std::fs::File;
 use self::temporary::Directory as TempDir;
+use std::fs::File;
 
 use unzip::Unzipper;
 
 mod assertions;
-use assertions::{non_empty_file, is_dir};
+use assertions::{is_dir, non_empty_file};
 
 mod utils;
 use utils::{create_archive, zip_single_file};
@@ -22,7 +22,9 @@ fn unpacks_single_file() {
     let mut writer = create_archive(&archive);
     zip_single_file("foo.txt", b"Hello World", &mut writer);
     writer.finish().unwrap();
-    Unzipper::new(File::open(archive).unwrap(), &dir).unzip().unwrap();
+    Unzipper::new(File::open(archive).unwrap(), &dir)
+        .unzip()
+        .unwrap();
 
     non_empty_file(dir.join("foo.txt"));
 }
@@ -37,7 +39,9 @@ fn unpacks_multiple_files() {
     zip_single_file("foo.txt", b"Hello World", &mut writer);
     zip_single_file("bar.txt", b"Hello World", &mut writer);
     writer.finish().unwrap();
-    Unzipper::new(File::open(archive).unwrap(), &dir).unzip().unwrap();
+    Unzipper::new(File::open(archive).unwrap(), &dir)
+        .unzip()
+        .unwrap();
 
     non_empty_file(dir.join("foo.txt"));
     non_empty_file(dir.join("bar.txt"));
@@ -52,7 +56,9 @@ fn creates_subdirectories() {
     let mut writer = create_archive(&archive);
     zip_single_file("foo/bar.txt", b"Hello World", &mut writer);
     writer.finish().unwrap();
-    Unzipper::new(File::open(archive).unwrap(), &dir).unzip().unwrap();
+    Unzipper::new(File::open(archive).unwrap(), &dir)
+        .unzip()
+        .unwrap();
 
     is_dir(dir.join("foo"));
 }
@@ -66,7 +72,9 @@ fn creates_files_in_subdirectories() {
     let mut writer = create_archive(&archive);
     zip_single_file("foo/bar.txt", b"Hello World", &mut writer);
     writer.finish().unwrap();
-    Unzipper::new(File::open(archive).unwrap(), &dir).unzip().unwrap();
+    Unzipper::new(File::open(archive).unwrap(), &dir)
+        .unzip()
+        .unwrap();
 
     non_empty_file(dir.join("foo/bar.txt"));
 }
@@ -80,7 +88,9 @@ fn unpacks_deep_directory() {
     let mut writer = create_archive(&archive);
     zip_single_file("foo/bar/baz.txt", b"Hello World", &mut writer);
     writer.finish().unwrap();
-    Unzipper::new(File::open(archive).unwrap(), &dir).unzip().unwrap();
+    Unzipper::new(File::open(archive).unwrap(), &dir)
+        .unzip()
+        .unwrap();
 
     is_dir(dir.join("foo"));
     is_dir(dir.join("foo/bar"));

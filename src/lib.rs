@@ -1,37 +1,33 @@
-extern crate zip;
 extern crate time;
 extern crate transformation_pipeline;
+extern crate zip;
 
 mod transformation_metadata;
 
+use std::fs;
 use std::io;
 use std::io::prelude::Read;
-use std::fs;
 use std::path::{Path, PathBuf};
-use transformation_pipeline::TransformationPipeline;
 use transformation_metadata::ExtractionMetadata;
+use transformation_pipeline::TransformationPipeline;
 
 mod strip_components;
 use strip_components::StripComponents;
 
 pub struct UnzipperStats {
-
     dirs: u16,
 
     files: u16,
-
 }
 
 type UnzipperResult = Result<UnzipperStats, io::Error>;
 
 pub struct Unzipper<R: Read + io::Seek, O: AsRef<Path>> {
-
     source: R,
 
     outdir: O,
 
     strip_components: u8,
-
 }
 
 impl<R: Read + io::Seek, O: AsRef<Path>> Unzipper<R, O> {
@@ -53,14 +49,11 @@ impl<R: Read + io::Seek, O: AsRef<Path>> Unzipper<R, O> {
         let mut archive = zip::ZipArchive::new(self.source)?;
         let outdir: &Path = Path::new(self.outdir.as_ref());
 
-        let mut stats = UnzipperStats {
-            dirs: 0,
-            files: 0,
-        };
+        let mut stats = UnzipperStats { dirs: 0, files: 0 };
 
-        let pipeline: TransformationPipeline<ExtractionMetadata> = TransformationPipeline::new(vec![
-            Box::new(StripComponents::new(self.strip_components)),
-        ]);
+        let pipeline: TransformationPipeline<ExtractionMetadata> = TransformationPipeline::new(
+            vec![Box::new(StripComponents::new(self.strip_components))],
+        );
 
         for i in 0..archive.len() {
             let mut file = archive.by_index(i)?;

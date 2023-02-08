@@ -1,8 +1,6 @@
-use time::Tm;
 use std::clone::Clone;
 
 pub struct ExtractionMetadata {
-
     // Fields that can't effect output:
     // (aka don't modify them unless you really need to change downstream behavior)
     pub comment: String,
@@ -17,15 +15,13 @@ pub struct ExtractionMetadata {
 
     // Fields used by output:
     // (aka most likely to be modified)
-
     pub extract: bool,
 
     pub filename: String,
 
-    pub last_modified: Tm,
+    pub last_modified: zip::DateTime,
 
     pub unix_mode: Option<u32>,
-
 }
 
 impl Clone for ExtractionMetadata {
