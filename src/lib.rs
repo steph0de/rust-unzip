@@ -30,6 +30,9 @@ pub struct Unzipper<R: Read + io::Seek, O: AsRef<Path>> {
     strip_components: u8,
 }
 
+pub fn convert_path(path: String) -> String{
+    path.replace('\\', "/")
+}
 impl<R: Read + io::Seek, O: AsRef<Path>> Unzipper<R, O> {
 
     pub fn new(reader: R, output: O) -> Unzipper<R, O> {
@@ -60,7 +63,7 @@ impl<R: Read + io::Seek, O: AsRef<Path>> Unzipper<R, O> {
 
             let metadata = pipeline.run(ExtractionMetadata {
                 extract: true,
-                filename: file.name().to_owned(),
+                filename: convert_path(file.name().to_owned()),
                 comment: file.comment().to_owned(),
                 compressed_size: file.compressed_size(),
                 uncompressed_size: file.size(),
@@ -77,11 +80,11 @@ impl<R: Read + io::Seek, O: AsRef<Path>> Unzipper<R, O> {
             let outpath: PathBuf = outdir.join(metadata.filename);
 
             if let Some(parent_dir) = outpath.as_path().parent() {
-                fs::create_dir_all(&parent_dir)?;
+                fs::create_dir_all(parent_dir)?;
             }
 
-            if (&*file.name()).ends_with('/') {
-                stats.dirs = stats.dirs + 1;
+            if (*file.name()).ends_with('/') || (*file.name()).ends_with('\\') {
+                stats.dirs += 1;
                 continue;
             }
             let mut outfile = fs::File::create(&outpath)?;
@@ -89,7 +92,7 @@ impl<R: Read + io::Seek, O: AsRef<Path>> Unzipper<R, O> {
 
             // TODO: Handle unix_mode, last_modified
 
-            stats.files = stats.files + 1;
+            stats.files += 1;
         }
 
         Ok(stats)
